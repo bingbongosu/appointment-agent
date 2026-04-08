@@ -1,0 +1,13 @@
+# --- Core AI Logic ---
+openai
+pydantic
+
+# --- Environment Management ---
+python-dotenv
+
+# --- Future: Gmail Integration ---
+# google-api-python-client
+# google-auth-oauthlib
+
+# --- Future: Calendar Integration ---
+# google-api-python-client
