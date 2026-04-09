@@ -1,7 +1,8 @@
-# models.py imported by multiple modules to define structured data formats for the appointment scheduling agent.
 from typing import List, Optional
+from pydantic import BaseModel, Field
 
-# Define data models for the appointment scheduling agent
+
+# models.py imported by multiple modules to define structured data formats for the appointment scheduling agent.
 class AppointmentRequest(BaseModel):
     # Define the structure for an appointment request extracted from an email. Sets boolean if it's a scheduling request.
     is_scheduling_request: bool = Field(
