@@ -23,7 +23,6 @@ def _extract_plain_text(payload: dict) -> str:
                 if data:
                     return base64.urlsafe_b64decode(data).decode("utf-8", errors="ignore")
 
-        # fallback: search nested parts
         for part in payload["parts"]:
             text = _extract_plain_text(part)
             if text:
@@ -42,7 +41,8 @@ def get_recent_message(gmail_service) -> dict | None:
     """
     results = gmail_service.users().messages().list(
         userId="me",
-        labelIds=["INBOX"],
+        labelIds=["INBOX", "UNREAD"],
+        q="-label:PROCESSED",
         maxResults=1
     ).execute()
 
@@ -63,12 +63,14 @@ def get_recent_message(gmail_service) -> dict | None:
 
     subject = _extract_header(headers, "Subject")
     sender = _extract_header(headers, "From")
+    rfc_message_id = _extract_header(headers, "Message-ID")
     body = _extract_plain_text(payload)
 
     return {
-        "id": message_id,
+        "id": message_id,  # Gmail internal id
         "thread_id": message.get("threadId"),
         "subject": subject,
         "sender": sender,
+        "message_id_header": rfc_message_id,  # RFC Message-ID header
         "body": body.strip(),
     }
