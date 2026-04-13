@@ -74,3 +74,46 @@ def get_recent_message(gmail_service) -> dict | None:
         "message_id_header": rfc_message_id,  # RFC Message-ID header
         "body": body.strip(),
     }
+    
+def get_unprocessed_message_ids(gmail_service, max_results=5) -> list[str]:
+    """
+    Returns Gmail message IDs for unread inbox emails
+    that do not have the PROCESSED label.
+    """
+    results = gmail_service.users().messages().list(
+        userId="me",
+        labelIds=["INBOX", "UNREAD"],
+        q="-label:PROCESSED",
+        maxResults=max_results
+    ).execute()
+
+    messages = results.get("messages", [])
+
+    return [msg["id"] for msg in messages]
+
+def get_message_by_id(gmail_service, message_id: str) -> dict:
+    """
+    Fetches and parses a Gmail message by ID.
+    """
+    message = gmail_service.users().messages().get(
+        userId="me",
+        id=message_id,
+        format="full"
+    ).execute()
+
+    payload = message.get("payload", {})
+    headers = payload.get("headers", [])
+
+    subject = _extract_header(headers, "Subject")
+    sender = _extract_header(headers, "From")
+    rfc_message_id = _extract_header(headers, "Message-ID")
+    body = _extract_plain_text(payload)
+
+    return {
+        "id": message_id,
+        "thread_id": message.get("threadId"),
+        "subject": subject,
+        "sender": sender,
+        "message_id_header": rfc_message_id,
+        "body": body.strip(),
+    }
