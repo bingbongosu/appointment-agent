@@ -1,8 +1,16 @@
-.env
+# Virtual environment
 .venv/
+
+# Python cache
 __pycache__/
 *.pyc
+
+# Secrets
+.env
 credentials.json
 token.json
 token.pickle
-__pycache__/
+
+# Logs & reports
+reports/
+DailyLog*.csv
