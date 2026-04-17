@@ -10,6 +10,8 @@ from googleapiclient.discovery import build
 from gmail_reader import get_recent_message, get_unprocessed_message_ids, get_message_by_id
 from gmail_writer import send_reply 
 from gmail_actions import get_or_create_label, mark_as_processed, get_unread_count
+from sms_sender_code import send_sms
+from daily_log import log_report_entry
 
 SCOPES = [
     "https://www.googleapis.com/auth/gmail.modify",
@@ -77,11 +79,19 @@ def main():
 
         if sent:
             print("Reply sent successfully.")
+            
+            log_report_entry(
+                comment=f"Replied to email from {sender_email} with subject: {message['subject']}",
+                process_name="email_reply"
+            )
 
             processed_label_id = get_or_create_label(service, "PROCESSED")
             
             mark_as_processed(service, message["id"], processed_label_id)
+            
+            send_sms("+14846315326", f"Replied to email from {sender_email} with subject: {message['subject']}")
 
+            print("Marked email as processed and sent SMS notification.")
         else:
             print("Reply failed.")
 

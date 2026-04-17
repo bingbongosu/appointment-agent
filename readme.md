@@ -13,6 +13,7 @@ An AI-powered scheduling assistant that:
 - Pydantic
 - OpenAI API
 - Google Gmail + Calendar APIs
+- twilio
 
 ## Setup
 1. Add credentials.json from Google Cloud
