@@ -11,9 +11,10 @@ SCOPES = [
     "https://www.googleapis.com/auth/calendar",
 ]
 
+
 def get_google_services():
     """
-    Authenticates the user and returns Gmail + Calendar service objects.
+    Authenticates once and returns Gmail + Calendar service objects.
     """
     creds = None
     token_path = Path("token.pickle")
@@ -28,7 +29,7 @@ def get_google_services():
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 "credentials.json",
-                SCOPES
+                SCOPES,
             )
             creds = flow.run_local_server(port=0)
 

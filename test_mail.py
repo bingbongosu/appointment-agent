@@ -1,59 +1,30 @@
-import os
 from email.utils import parseaddr
 
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
+from google_client import get_google_services
 
-# Your modules
-from gmail_reader import get_recent_message, get_unprocessed_message_ids, get_message_by_id
-from gmail_writer import send_reply 
-from gmail_actions import get_or_create_label, mark_as_processed, get_unread_count
+from gmail_reader import get_unprocessed_message_ids, get_message_by_id
+from gmail_writer import send_reply
+from gmail_actions import get_or_create_label, mark_as_processed
 from sms_sender_code import send_sms
 from daily_log import log_report_entry
 
-SCOPES = [
-    "https://www.googleapis.com/auth/gmail.modify",
-    "https://www.googleapis.com/auth/gmail.send",
-]
-
-processed_label_id = "PROCESSED"
-
-def get_gmail_service():
-    creds = None
-
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "credentials.json", SCOPES
-            )
-            creds = flow.run_local_server(port=0)
-
-        with open("token.json", "w") as token:
-            token.write(creds.to_json())
-
-    return build("gmail", "v1", credentials=creds)
-
 
 def main():
-    print("Connecting to Gmail...")
-    service = get_gmail_service()
+    print("Connecting to Google services...")
 
-    count = get_unprocessed_message_ids(service)
-    
-    if len(count) == 0:
+    gmail_service, _ = get_google_services()
+
+    message_ids = get_unprocessed_message_ids(gmail_service)
+
+    if not message_ids:
         print("No unread emails found.")
         return
-    
 
-    for msg_id in count:        
-        message = get_message_by_id(service, msg_id)
+    processed_label_id = get_or_create_label(gmail_service, "PROCESSED")
+
+    for msg_id in message_ids:
+        message = get_message_by_id(gmail_service, msg_id)
+
         print("=== EMAIL OUTPUT ===")
         print(f"ID: {message['id']}")
         print(f"Thread: {message['thread_id']}")
@@ -62,14 +33,12 @@ def main():
         print("\n--- BODY ---\n")
         print(message["body"])
 
-
-        # 👇 Extract clean email address
         sender_email = parseaddr(message["sender"])[1]
 
         print("\nSending reply...\n")
 
         sent = send_reply(
-            gmail_service=service,
+            gmail_service=gmail_service,
             to=sender_email,
             subject=message["subject"],
             body="Thanks for your email! I'll get back to you soon.",
@@ -79,17 +48,18 @@ def main():
 
         if sent:
             print("Reply sent successfully.")
-            
+
             log_report_entry(
                 comment=f"Replied to email from {sender_email} with subject: {message['subject']}",
-                process_name="email_reply"
+                process_name="email_reply",
             )
 
-            processed_label_id = get_or_create_label(service, "PROCESSED")
-            
-            mark_as_processed(service, message["id"], processed_label_id)
-            
-            send_sms("+14846315326", f"Replied to email from {sender_email} with subject: {message['subject']}")
+            mark_as_processed(gmail_service, message["id"], processed_label_id)
+
+            send_sms(
+                "+14846315326",
+                f"Replied to email from {sender_email} with subject: {message['subject']}",
+            )
 
             print("Marked email as processed and sent SMS notification.")
         else:
