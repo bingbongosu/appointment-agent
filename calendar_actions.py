@@ -1,16 +1,10 @@
-from __future__ import annotations
-
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List
 
 
 def to_google_datetime(dt: datetime) -> str:
     """
-    Converts a Python datetime into the RFC3339 string format
-    Google Calendar expects.
-
-    Example:
-    2026-04-17T14:00:00-04:00
+    Converts a Python datetime into a Google-friendly ISO string.
     """
     if dt.tzinfo is None:
         dt = dt.astimezone()
@@ -25,13 +19,7 @@ def get_busy_times(
     calendar_id: str = "primary",
 ) -> List[dict]:
     """
-    Returns a list of busy windows between start_dt and end_dt.
-
-    Example return:
-    [
-        {"start": "2026-04-17T10:00:00-04:00", "end": "2026-04-17T10:30:00-04:00"},
-        {"start": "2026-04-17T13:00:00-04:00", "end": "2026-04-17T14:00:00-04:00"},
-    ]
+    Returns the busy windows for a given time range.
     """
     body = {
         "timeMin": to_google_datetime(start_dt),
@@ -50,8 +38,7 @@ def is_time_available(
     calendar_id: str = "primary",
 ) -> bool:
     """
-    Returns True if the proposed time slot is free.
-    Returns False if anything overlaps it.
+    Returns True if the time slot is free.
     """
     busy_times = get_busy_times(
         calendar_service=calendar_service,
@@ -73,7 +60,7 @@ def create_appointment(
     calendar_id: str = "primary",
 ) -> dict:
     """
-    Creates a calendar appointment and returns the created event dict.
+    Creates a calendar event and returns the created event dictionary.
     """
     if end_dt <= start_dt:
         raise ValueError("end_dt must be after start_dt")
@@ -104,33 +91,3 @@ def create_appointment(
     )
 
     return created_event
-
-
-def check_and_create_appointment(
-    calendar_service,
-    title: str,
-    start_dt: datetime,
-    end_dt: datetime,
-    description: str = "",
-    location: str = "",
-    attendee_emails: List[str] | None = None,
-    calendar_id: str = "primary",
-) -> dict | None:
-    """
-    Checks if a time is available.
-    If yes, creates the appointment.
-    If not, returns None.
-    """
-    if not is_time_available(calendar_service, start_dt, end_dt, calendar_id):
-        return None
-
-    return create_appointment(
-        calendar_service=calendar_service,
-        title=title,
-        start_dt=start_dt,
-        end_dt=end_dt,
-        description=description,
-        location=location,
-        attendee_emails=attendee_emails,
-        calendar_id=calendar_id,
-    )
