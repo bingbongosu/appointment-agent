@@ -15,11 +15,17 @@ Rules:
 - is_scheduling_request should be true if the sender wants to meet, book time, reschedule, confirm a meeting, or discuss availability.
 - sender_name should only be included if reasonably inferable.
 - topic should be short and clear.
-- requested_timeframe should capture phrases like 'next week', 'Tuesday afternoon', 'tomorrow morning'.
+- requested_timeframe should summarize the sender's timing preference in plain English.
+- preferred_days should contain full lowercase weekday names only when clearly stated.
+- excluded_days should contain full lowercase weekday names the sender says do not work.
+- preferred_time_of_day should be one of: morning, afternoon, evening, noon, or null.
+- specific_time should be included only if the sender clearly requests a specific time, formatted as HH:MM in 24-hour time.
+- not_before_time should be included for phrases like 'after 2 PM', formatted as HH:MM in 24-hour time.
+- not_after_time should be included for phrases like 'before 4 PM', formatted as HH:MM in 24-hour time.
 - duration_minutes defaults to 30 unless the email strongly suggests otherwise.
-- tone should be one word like 'professional', 'casual', 'urgent'.
+- tone should be a single word like professional, casual, urgent, warm, or direct.
+- notes may include useful interpretation that does not fit elsewhere.
 """
-
 
 def parse_email(email_text: str) -> AppointmentRequest:
     

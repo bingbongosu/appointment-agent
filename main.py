@@ -1,14 +1,12 @@
 from dotenv import load_dotenv
 
 from parser import parse_email
-from scheduler import choose_slots
 from reply_writer import write_reply
 from models import AgentOutput
 
 from google_client import get_google_services
 from gmail_reader import get_recent_message
-from calendar_reader import get_upcoming_events
-from scheduler import choose_slots, generate_available_slots
+from scheduler import generate_available_slots
 
 
 def main() -> None:
@@ -30,9 +28,17 @@ def main() -> None:
 
     parsed = parse_email(email_text)
 
-    events = get_upcoming_events(calendar_service, days_ahead=7)
-    availability = generate_available_slots(events)
-    slots = choose_slots(parsed.requested_timeframe, availability)
+    if not parsed.is_scheduling_request:
+        print("Email is not a scheduling request.")
+        return
+
+    slots = generate_available_slots(
+        calendar_service=calendar_service,
+        request=parsed,
+        days_ahead=7,
+        max_slots=3,
+    )
+
     reply = write_reply(parsed, slots)
 
     result = AgentOutput(
@@ -49,8 +55,11 @@ def main() -> None:
     print(result.parsed_request.model_dump_json(indent=2))
 
     print("\n--- Proposed Slots ---")
-    for slot in result.proposed_slots:
-        print(f"- {slot}")
+    if result.proposed_slots:
+        for slot in result.proposed_slots:
+            print(f"- {slot}")
+    else:
+        print("No slots available.")
 
     print("\n--- Reply Draft ---")
     print(result.reply_draft)
