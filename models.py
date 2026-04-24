@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
@@ -66,9 +67,26 @@ class AppointmentRequest(BaseModel):
         default=None,
         description="Any extra useful interpretation."
     )
-    
+
+class SlotResult(BaseModel):
+    """
+    Holds scheduler output.
+
+    slots:
+        The proposed time slots.
+
+    exact_requested_time_available:
+        True when the sender requested a specific day/time
+        and that exact slot was available, so the reply
+        should confirm instead of asking.
+    """
+    slots: List[str]
+    exact_requested_time_available: bool = False
+    exact_start: Optional[datetime] = None
+    exact_end: Optional[datetime] = None
 
 class AgentOutput(BaseModel):
     parsed_request: AppointmentRequest
     proposed_slots: List[str]
     reply_draft: str
+    

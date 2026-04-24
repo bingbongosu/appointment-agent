@@ -1,40 +1,35 @@
 from typing import List
-from models import AppointmentRequest
+from models import AppointmentRequest, SlotResult
 
 
-def write_reply(request: AppointmentRequest, slots: List[str]) -> str:
-    """
-    Generates a plain-English reply draft using the parsed request and proposed slots.
-    """
-    if not request.is_scheduling_request:
-        return "This does not appear to be a scheduling email, so no meeting reply was drafted."
+def write_reply(parsed: AppointmentRequest, slot_result: SlotResult) -> str:
+    slots = slot_result.slots
 
-    greeting = "Hi"
-    if request.sender_name:
-        greeting = f"Hi {request.sender_name}"
-
-    topic_line = ""
-    if request.topic:
-        topic_line = f" to discuss {request.topic}"
-
-    if not slots:
+    if slot_result.exact_requested_time_available and slots:
         return (
-            f"{greeting},\n\n"
-            f"Thanks for reaching out. I’d be glad to connect{topic_line}. "
-            f"I’m checking availability and will follow up with some options shortly.\n\n"
-            f"Best,\nSteve"
+            f"Hi,\n\n"
+            f"That time works. I have you locked in for {slots[0]} "
+            f"to discuss {parsed.topic}.\n\n"
+            f"Best,\n"
+            f"Steve"
         )
 
-    if len(slots) == 1:
-        slot_text = slots[0]
-    elif len(slots) == 2:
-        slot_text = f"{slots[0]} or {slots[1]}"
-    else:
-        slot_text = f"{slots[0]}, {slots[1]}, or {slots[2]}"
+    if slots:
+        slot_text = ", ".join(slots[:-1]) + f", or {slots[-1]}" if len(slots) > 1 else slots[0]
+
+        return (
+            f"Hi,\n\n"
+            f"Thanks for reaching out. I’d be happy to connect"
+            f"{f' to discuss {parsed.topic}' if parsed.topic else ''}. "
+            f"I’m available {slot_text}. Let me know what works best for you.\n\n"
+            f"Best,\n"
+            f"Steve"
+        )
 
     return (
-        f"{greeting},\n\n"
-        f"Thanks for reaching out. I’d be happy to connect{topic_line}. "
-        f"I’m available {slot_text}. Let me know what works best for you.\n\n"
-        f"Best,\nSteve"
+        f"Hi,\n\n"
+        f"Thanks for reaching out. I don’t have availability that matches the requested time. "
+        f"Please send over a few other options and I’ll take a look.\n\n"
+        f"Best,\n"
+        f"Steve"
     )
