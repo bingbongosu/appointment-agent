@@ -56,17 +56,15 @@ def main() -> None:
     """
 
     load_dotenv()
-    
-    log_mode = os.getenv("LOG_MODE", "console").lower()
 
+    log_mode = os.getenv("LOG_MODE", "console")
     valid_modes = {"console", "file", "both", "silent"}
 
-if log_mode not in valid_modes:
-    raise ValueError(f"Invalid LOG_MODE '{log_mode}'. Must be one of {valid_modes}")
+    if log_mode.lower() not in valid_modes:
+        raise ValueError(f"Invalid LOG_MODE '{log_mode}'. Must be one of {valid_modes}")
 
     alert_phone_number = os.getenv("ALERT_PHONE_NUMBER")
 
-    log_mode = os.getenv("LOG_MODE", "console")
     log_file = os.getenv("LOG_FILE", "app.log")
     log_level = get_log_level(os.getenv("LOG_LEVEL", "INFO"))
 
@@ -91,7 +89,10 @@ if log_mode not in valid_modes:
 
     processed_label_id = get_or_create_label(gmail_service, "PROCESSED")
 
+    # Process each unhandled email
     for msg_id in message_ids:
+        
+        # Log the message ID being processed at INFO level
         logger.info(f"Processing message ID: {msg_id}")
 
         message = get_message_by_id(gmail_service, msg_id)
