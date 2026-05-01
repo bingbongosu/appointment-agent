@@ -1,11 +1,12 @@
 import os
+import logging
 from email.utils import parseaddr
 
 from dotenv import load_dotenv
 
 from parser import parse_email
 from reply_writer import write_reply
-from models import AgentOutput, SlotResult
+from models import AgentOutput
 
 from google_client import get_google_services
 from gmail_reader import get_unprocessed_message_ids, get_message_by_id
@@ -14,48 +15,111 @@ from gmail_actions import get_or_create_label, mark_as_processed
 from scheduler import generate_available_slots
 from sms_sender_code import send_sms
 from daily_log import log_report_entry
-from calendar_actions import create_appointment, is_time_available
+from calendar_actions import create_appointment
+
+from logger_config import setup_logger
+
+
+def get_log_level(level_name: str) -> int:
+    """
+    Convert a string from .env into a real logging level.
+
+    Example:
+    LOG_LEVEL=DEBUG -> logging.DEBUG
+    LOG_LEVEL=INFO  -> logging.INFO
+    """
+
+    levels = {
+        "DEBUG": logging.DEBUG,
+        "INFO": logging.INFO,
+        "WARNING": logging.WARNING,
+        "ERROR": logging.ERROR,
+        "CRITICAL": logging.CRITICAL,
+    }
+
+    return levels.get(level_name.upper(), logging.INFO)
 
 
 def main() -> None:
+    """
+    Main entry point for the appointment email agent.
+
+    Responsibilities:
+    - Load environment variables
+    - Set up logging
+    - Connect to Google services
+    - Find unprocessed emails
+    - Parse scheduling requests
+    - Generate calendar slots
+    - Send replies
+    - Mark handled emails as processed
+    """
+
     load_dotenv()
+    
+    log_mode = os.getenv("LOG_MODE", "console").lower()
+
+    valid_modes = {"console", "file", "both", "silent"}
+
+if log_mode not in valid_modes:
+    raise ValueError(f"Invalid LOG_MODE '{log_mode}'. Must be one of {valid_modes}")
 
     alert_phone_number = os.getenv("ALERT_PHONE_NUMBER")
+
+    log_mode = os.getenv("LOG_MODE", "console")
+    log_file = os.getenv("LOG_FILE", "app.log")
+    log_level = get_log_level(os.getenv("LOG_LEVEL", "INFO"))
+
+    logger = setup_logger(
+        name="appointment_agent",
+        log_file=log_file,
+        log_level=log_level,
+        output_mode=log_mode,
+    )
+
+    logger.info("Appointment agent started.")
 
     gmail_service, calendar_service = get_google_services()
 
     message_ids = get_unprocessed_message_ids(gmail_service)
 
     if not message_ids:
-        print("No unprocessed emails found.")
+        logger.info("No unprocessed emails found.")
         return
+
+    logger.info(f"Found {len(message_ids)} unprocessed email(s).")
 
     processed_label_id = get_or_create_label(gmail_service, "PROCESSED")
 
     for msg_id in message_ids:
+        logger.info(f"Processing message ID: {msg_id}")
+
         message = get_message_by_id(gmail_service, msg_id)
 
-        print("=== EMAIL OUTPUT ===")
-        print(f"ID: {message['id']}")
-        print(f"Thread: {message['thread_id']}")
-        print(f"From: {message['sender']}")
-        print(f"Subject: {message['subject']}")
-        print("\n--- BODY ---\n")
-        print(message["body"])
+        logger.debug("=== EMAIL OUTPUT ===")
+        logger.debug(f"ID: {message['id']}")
+        logger.debug(f"Thread: {message['thread_id']}")
+        logger.debug(f"From: {message['sender']}")
+        logger.debug(f"Subject: {message['subject']}")
+        logger.debug(f"Body:\n{message['body']}")
 
         sender_email = parseaddr(message["sender"])[1]
         email_text = message["body"] or ""
         subject_text = message["subject"] or ""
 
         if not email_text and not subject_text:
-            print("Email body and subject were empty. Skipping.")
+            logger.warning("Email body and subject were empty. Skipping.")
             continue
 
         parsed = parse_email(f"Subject: {subject_text}\n\nBody: {email_text}")
 
         if not parsed.is_scheduling_request:
-            print("Email is not a scheduling request. Skipping.")
+            logger.info(
+                f"Email from {sender_email} is not a scheduling request. Skipping."
+            )
             continue
+
+        logger.info(f"Scheduling request detected from {sender_email}.")
 
         slot_result = generate_available_slots(
             calendar_service=calendar_service,
@@ -69,6 +133,8 @@ def main() -> None:
             and slot_result.exact_start
             and slot_result.exact_end
         ):
+            logger.info("Exact requested time is available. Creating appointment.")
+
             create_appointment(
                 calendar_service=calendar_service,
                 title=parsed.topic or "Appointment",
@@ -77,6 +143,7 @@ def main() -> None:
                 description=f"Appointment requested by {sender_email}",
                 attendee_emails=[sender_email],
             )
+
         reply = write_reply(parsed, slot_result)
 
         result = AgentOutput(
@@ -85,20 +152,19 @@ def main() -> None:
             reply_draft=reply,
         )
 
-        print("\n--- Parsed Request ---")
-        print(result.parsed_request.model_dump_json(indent=2))
+        logger.debug("Parsed request:")
+        logger.debug(result.parsed_request.model_dump_json(indent=2))
 
-        print("\n--- Proposed Slots ---")
         if result.proposed_slots:
+            logger.info(f"Proposed {len(result.proposed_slots)} slot(s).")
             for slot in result.proposed_slots:
-                print(f"- {slot}")
+                logger.debug(f"Proposed slot: {slot}")
         else:
-            print("No slots available.")
+            logger.warning("No slots available.")
 
-        print("\n--- Reply Draft ---")
-        print(result.reply_draft)
+        logger.debug(f"Reply draft:\n{result.reply_draft}")
 
-        print("\nSending reply...\n")
+        logger.info("Sending reply.")
 
         sent = send_reply(
             gmail_service=gmail_service,
@@ -110,7 +176,7 @@ def main() -> None:
         )
 
         if sent:
-            print("Reply sent successfully.")
+            logger.info("Reply sent successfully.")
 
             try:
                 log_report_entry(
@@ -118,22 +184,24 @@ def main() -> None:
                     process_name="email_reply",
                 )
             except PermissionError:
-                print("Could not write to daily log because the CSV is open.")
+                logger.error("Could not write to daily log because the CSV is open.")
 
             mark_as_processed(gmail_service, message["id"], processed_label_id)
+            logger.info("Marked email as processed.")
 
             if alert_phone_number:
                 send_sms(
                     alert_phone_number,
                     f"Processed email from {sender_email} with subject: {message['subject']}",
                 )
-                print("SMS notification sent.")
+                logger.info("SMS notification sent.")
             else:
-                print("No ALERT_PHONE_NUMBER found. SMS skipped.")
+                logger.info("No ALERT_PHONE_NUMBER found. SMS skipped.")
 
-            print("Marked email as processed.")
         else:
-            print("Reply failed. Email was not marked as processed.")
+            logger.error("Reply failed. Email was not marked as processed.")
+
+    logger.info("Appointment agent finished.")
 
 
 if __name__ == "__main__":
