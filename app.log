@@ -1,0 +1,77 @@
+2026-05-02 10:20:00,138 | INFO | appointment_agent | main | 78 | Appointment agent started.
+2026-05-02 10:22:55,886 | INFO | appointment_agent | main | 78 | Appointment agent started.
+2026-05-02 10:23:04,014 | INFO | appointment_agent | main | 88 | Found 1 unprocessed email(s).
+2026-05-02 10:23:04,096 | INFO | appointment_agent | main | 96 | Processing message ID: 19dc16d2b0b73c2b
+2026-05-02 10:23:04,204 | DEBUG | appointment_agent | main | 100 | === EMAIL OUTPUT ===
+2026-05-02 10:23:04,204 | DEBUG | appointment_agent | main | 101 | ID: 19dc16d2b0b73c2b
+2026-05-02 10:23:04,205 | DEBUG | appointment_agent | main | 102 | Thread: 19dc16d2b0b73c2b
+2026-05-02 10:23:04,205 | DEBUG | appointment_agent | main | 103 | From: Google <no-reply@accounts.google.com>
+2026-05-02 10:23:04,210 | DEBUG | appointment_agent | main | 104 | Subject: Google updated your settings
+2026-05-02 10:23:04,210 | DEBUG | appointment_agent | main | 105 | Body:
+[image: Google]
+Hi Steven, we updated your settings
+
+
+stevenkempliner@gmail.com
+Google couldn’t confirm you're an adult, so some account settings have
+changed
+Check it out
+<https://accounts.google.com/AccountChooser?Email=stevenkempliner@gmail.com&continue=https://myaccount.google.com/check-settings?cfc%3D1%26rfn%3D1777035128000>
+
+
+SafeSearch is on
+Google may hide explicit content, like pornography, from your search results
+
+Personalized ads are off
+Google won’t show you personalized ads
+
+Timeline is off
+Timeline won’t automatically save your visits and routes anymore
+
+Are you an adult?
+Verify your age
+<https://accounts.google.com/AccountChooser?Email=stevenkempliner@gmail.com&continue=https://myaccount.google.com/age-verification?avl%3D2%26p%3D7%26rfn%3D1777035128000>
+and choose the settings that are right for you
+You received this email to let you know about important changes to your
+Google Account and services.
+© 2026 Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
+2026-05-02 10:23:10,109 | INFO | appointment_agent | main | 121 | Email from no-reply@accounts.google.com is not a scheduling request. Skipping.
+2026-05-02 10:23:10,109 | INFO | appointment_agent | main | 223 | Appointment agent finished.
+2026-05-02 10:23:14,871 | INFO | appointment_agent | main | 78 | Appointment agent started.
+2026-05-02 10:23:15,086 | INFO | appointment_agent | main | 88 | Found 1 unprocessed email(s).
+2026-05-02 10:23:15,169 | INFO | appointment_agent | main | 96 | Processing message ID: 19dc16d2b0b73c2b
+2026-05-02 10:23:15,245 | DEBUG | appointment_agent | main | 100 | === EMAIL OUTPUT ===
+2026-05-02 10:23:15,245 | DEBUG | appointment_agent | main | 101 | ID: 19dc16d2b0b73c2b
+2026-05-02 10:23:15,245 | DEBUG | appointment_agent | main | 102 | Thread: 19dc16d2b0b73c2b
+2026-05-02 10:23:15,245 | DEBUG | appointment_agent | main | 103 | From: Google <no-reply@accounts.google.com>
+2026-05-02 10:23:15,245 | DEBUG | appointment_agent | main | 104 | Subject: Google updated your settings
+2026-05-02 10:23:15,245 | DEBUG | appointment_agent | main | 105 | Body:
+[image: Google]
+Hi Steven, we updated your settings
+
+
+stevenkempliner@gmail.com
+Google couldn’t confirm you're an adult, so some account settings have
+changed
+Check it out
+<https://accounts.google.com/AccountChooser?Email=stevenkempliner@gmail.com&continue=https://myaccount.google.com/check-settings?cfc%3D1%26rfn%3D1777035128000>
+
+
+SafeSearch is on
+Google may hide explicit content, like pornography, from your search results
+
+Personalized ads are off
+Google won’t show you personalized ads
+
+Timeline is off
+Timeline won’t automatically save your visits and routes anymore
+
+Are you an adult?
+Verify your age
+<https://accounts.google.com/AccountChooser?Email=stevenkempliner@gmail.com&continue=https://myaccount.google.com/age-verification?avl%3D2%26p%3D7%26rfn%3D1777035128000>
+and choose the settings that are right for you
+You received this email to let you know about important changes to your
+Google Account and services.
+© 2026 Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
+2026-05-02 10:23:20,954 | INFO | appointment_agent | main | 121 | Email from no-reply@accounts.google.com is not a scheduling request. Skipping.
+2026-05-02 10:23:20,954 | INFO | appointment_agent | main | 223 | Appointment agent finished.

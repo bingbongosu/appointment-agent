@@ -108,12 +108,15 @@ def main() -> None:
         email_text = message["body"] or ""
         subject_text = message["subject"] or ""
 
+        # If both the email body and subject are empty, log a warning and skip processing this email.
         if not email_text and not subject_text:
             logger.warning("Email body and subject were empty. Skipping.")
             continue
 
+        # Parse the email content to determine if it's a scheduling request and extract relevant information.
         parsed = parse_email(f"Subject: {subject_text}\n\nBody: {email_text}")
 
+        # If the email is not recognized as a scheduling request, log this information and skip further processing for this email.
         if not parsed.is_scheduling_request:
             logger.info(
                 f"Email from {sender_email} is not a scheduling request. Skipping."
@@ -122,12 +125,16 @@ def main() -> None:
 
         logger.info(f"Scheduling request detected from {sender_email}.")
 
+        # Generate available calendar slots based on the parsed request and the user's calendar.
         slot_result = generate_available_slots(
             calendar_service=calendar_service,
             request=parsed,
             days_ahead=7,
             max_slots=3,
         )
+
+        # If an exact requested time is available, create a calendar appointment immediately and include that information in the reply.
+        appointment_created = False
 
         if (
             slot_result.exact_requested_time_available
@@ -136,14 +143,25 @@ def main() -> None:
         ):
             logger.info("Exact requested time is available. Creating appointment.")
 
-            create_appointment(
-                calendar_service=calendar_service,
-                title=parsed.topic or "Appointment",
-                start_dt=slot_result.exact_start,
-                end_dt=slot_result.exact_end,
-                description=f"Appointment requested by {sender_email}",
-                attendee_emails=[sender_email],
-            )
+            try:
+                appointment = create_appointment(
+                    calendar_service=calendar_service,
+                    title=parsed.topic or "Appointment",
+                    start_dt=slot_result.exact_start,
+                    end_dt=slot_result.exact_end,
+                    description=f"Appointment requested by {sender_email}",
+                    attendee_emails=[sender_email],
+                )
+
+                if appointment:
+                    appointment_created = True
+                    logger.info("Appointment created successfully.")
+                else:
+                    logger.error("Appointment creation returned no result.")
+
+            except Exception as e:
+                logger.error(f"Appointment creation failed: {e}")
+                continue
 
         reply = write_reply(parsed, slot_result)
 
