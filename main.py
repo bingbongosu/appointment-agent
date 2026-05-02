@@ -208,7 +208,7 @@ def main() -> None:
 
             try:
                 log_report_entry(
-                    comment=f"Processed email from {sender_email} with subject: {message['subject']}",
+                    comment=f"Processed email from {sender_email} with subject: {message['subject']} with proposed slots: {', '.join(slot_result.slots) if slot_result.slots else 'none'} and appointment created: {appointment_created}",
                     process_name="email_reply",
                 )
             except PermissionError:

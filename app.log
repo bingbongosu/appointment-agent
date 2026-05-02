@@ -384,3 +384,161 @@ Google Account and services.
 © 2026 Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
 2026-05-02 11:03:52,787 | INFO | appointment_agent | main | 127 | Email from no-reply@accounts.google.com is not a scheduling request. Skipping.
 2026-05-02 11:03:52,787 | INFO | appointment_agent | main | 232 | Appointment agent finished.
+2026-05-02 11:42:14,931 | INFO | appointment_agent | main | 78 | Appointment agent started.
+2026-05-02 11:42:15,358 | INFO | appointment_agent | main | 90 | Found 2 unprocessed email(s).
+2026-05-02 11:42:15,433 | INFO | appointment_agent | main | 99 | Processing message ID: 19de95a9265ddacf
+2026-05-02 11:42:15,511 | DEBUG | appointment_agent | main | 105 | === EMAIL OUTPUT ===
+2026-05-02 11:42:15,512 | DEBUG | appointment_agent | main | 106 | ID: 19de95a9265ddacf
+2026-05-02 11:42:15,512 | DEBUG | appointment_agent | main | 107 | Thread: 19de95a9265ddacf
+2026-05-02 11:42:15,514 | DEBUG | appointment_agent | main | 108 | From: Steven Breinlinger <steven.breinlinger@gmail.com>
+2026-05-02 11:42:15,514 | DEBUG | appointment_agent | main | 109 | Subject: talk about tomatoes
+2026-05-02 11:42:15,514 | DEBUG | appointment_agent | main | 110 | Body:
+Do you have time a 2pm to discuss this?
+2026-05-02 11:42:20,893 | INFO | appointment_agent | main | 132 | Scheduling request detected from steven.breinlinger@gmail.com.
+2026-05-02 11:42:21,292 | DEBUG | appointment_agent | main | 183 | Parsed request:
+2026-05-02 11:42:21,292 | DEBUG | appointment_agent | main | 184 | {
+  "is_scheduling_request": true,
+  "sender_name": null,
+  "topic": "talk about tomatoes",
+  "requested_timeframe": "at 2 PM",
+  "preferred_days": null,
+  "excluded_days": null,
+  "preferred_time_of_day": "afternoon",
+  "specific_time": "14:00",
+  "not_before_time": null,
+  "not_after_time": null,
+  "duration_minutes": 30,
+  "tone": "direct",
+  "notes": null
+}
+2026-05-02 11:42:21,293 | INFO | appointment_agent | main | 187 | Proposed 3 slot(s).
+2026-05-02 11:42:21,293 | DEBUG | appointment_agent | main | 189 | Proposed slot: Monday 2:00 PM
+2026-05-02 11:42:21,293 | DEBUG | appointment_agent | main | 189 | Proposed slot: Tuesday 2:00 PM
+2026-05-02 11:42:21,294 | DEBUG | appointment_agent | main | 189 | Proposed slot: Wednesday 2:00 PM
+2026-05-02 11:42:21,294 | DEBUG | appointment_agent | main | 193 | Reply draft:
+Hi,
+
+Thanks for reaching out. I’d be happy to connect to discuss talk about tomatoes. I’m available Monday 2:00 PM, Tuesday 2:00 PM, or Wednesday 2:00 PM. Let me know what works best for you.
+
+Best,
+Steve
+2026-05-02 11:42:21,295 | INFO | appointment_agent | main | 195 | Sending reply.
+2026-05-02 11:42:21,587 | INFO | appointment_agent | main | 207 | Reply sent successfully.
+2026-05-02 11:42:21,949 | INFO | appointment_agent | main | 218 | Marked email as processed.
+2026-05-02 11:42:22,495 | INFO | appointment_agent | main | 225 | SMS notification sent.
+2026-05-02 11:42:22,495 | INFO | appointment_agent | main | 99 | Processing message ID: 19dc16d2b0b73c2b
+2026-05-02 11:42:22,608 | DEBUG | appointment_agent | main | 105 | === EMAIL OUTPUT ===
+2026-05-02 11:42:22,608 | DEBUG | appointment_agent | main | 106 | ID: 19dc16d2b0b73c2b
+2026-05-02 11:42:22,609 | DEBUG | appointment_agent | main | 107 | Thread: 19dc16d2b0b73c2b
+2026-05-02 11:42:22,609 | DEBUG | appointment_agent | main | 108 | From: Google <no-reply@accounts.google.com>
+2026-05-02 11:42:22,610 | DEBUG | appointment_agent | main | 109 | Subject: Google updated your settings
+2026-05-02 11:42:22,610 | DEBUG | appointment_agent | main | 110 | Body:
+[image: Google]
+Hi Steven, we updated your settings
+
+
+stevenkempliner@gmail.com
+Google couldn’t confirm you're an adult, so some account settings have
+changed
+Check it out
+<https://accounts.google.com/AccountChooser?Email=stevenkempliner@gmail.com&continue=https://myaccount.google.com/check-settings?cfc%3D1%26rfn%3D1777035128000>
+
+
+SafeSearch is on
+Google may hide explicit content, like pornography, from your search results
+
+Personalized ads are off
+Google won’t show you personalized ads
+
+Timeline is off
+Timeline won’t automatically save your visits and routes anymore
+
+Are you an adult?
+Verify your age
+<https://accounts.google.com/AccountChooser?Email=stevenkempliner@gmail.com&continue=https://myaccount.google.com/age-verification?avl%3D2%26p%3D7%26rfn%3D1777035128000>
+and choose the settings that are right for you
+You received this email to let you know about important changes to your
+Google Account and services.
+© 2026 Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
+2026-05-02 11:42:25,598 | INFO | appointment_agent | main | 127 | Email from no-reply@accounts.google.com is not a scheduling request. Skipping.
+2026-05-02 11:42:25,598 | INFO | appointment_agent | main | 232 | Appointment agent finished.
+2026-05-02 11:43:55,180 | INFO | appointment_agent | main | 78 | Appointment agent started.
+2026-05-02 11:43:55,443 | INFO | appointment_agent | main | 90 | Found 2 unprocessed email(s).
+2026-05-02 11:43:55,530 | INFO | appointment_agent | main | 99 | Processing message ID: 19de95c3581dafbd
+2026-05-02 11:43:55,596 | DEBUG | appointment_agent | main | 105 | === EMAIL OUTPUT ===
+2026-05-02 11:43:55,597 | DEBUG | appointment_agent | main | 106 | ID: 19de95c3581dafbd
+2026-05-02 11:43:55,597 | DEBUG | appointment_agent | main | 107 | Thread: 19de95c3581dafbd
+2026-05-02 11:43:55,598 | DEBUG | appointment_agent | main | 108 | From: Steven Breinlinger <steven.breinlinger@gmail.com>
+2026-05-02 11:43:55,598 | DEBUG | appointment_agent | main | 109 | Subject: my shirt
+2026-05-02 11:43:55,598 | DEBUG | appointment_agent | main | 110 | Body:
+do you have time on tuesday at 1pm to discuss this?
+2026-05-02 11:44:00,352 | INFO | appointment_agent | main | 132 | Scheduling request detected from steven.breinlinger@gmail.com.
+2026-05-02 11:44:00,718 | INFO | appointment_agent | main | 151 | Exact requested time is available. Creating appointment.
+2026-05-02 11:44:01,088 | INFO | appointment_agent | main | 165 | Appointment created successfully.
+2026-05-02 11:44:01,089 | DEBUG | appointment_agent | main | 183 | Parsed request:
+2026-05-02 11:44:01,089 | DEBUG | appointment_agent | main | 184 | {
+  "is_scheduling_request": true,
+  "sender_name": null,
+  "topic": "discuss shirt",
+  "requested_timeframe": "on Tuesday at 1 PM",
+  "preferred_days": [
+    "tuesday"
+  ],
+  "excluded_days": null,
+  "preferred_time_of_day": "afternoon",
+  "specific_time": "13:00",
+  "not_before_time": null,
+  "not_after_time": null,
+  "duration_minutes": 30,
+  "tone": "casual",
+  "notes": "The sender wants to meet specifically on Tuesday."
+}
+2026-05-02 11:44:01,090 | INFO | appointment_agent | main | 187 | Proposed 1 slot(s).
+2026-05-02 11:44:01,090 | DEBUG | appointment_agent | main | 189 | Proposed slot: Tuesday 1:00 PM
+2026-05-02 11:44:01,091 | DEBUG | appointment_agent | main | 193 | Reply draft:
+Hi,
+
+That time works. I have you locked in for Tuesday 1:00 PM to discuss discuss shirt.
+
+Best,
+Steve
+2026-05-02 11:44:01,091 | INFO | appointment_agent | main | 195 | Sending reply.
+2026-05-02 11:44:01,390 | INFO | appointment_agent | main | 207 | Reply sent successfully.
+2026-05-02 11:44:01,789 | INFO | appointment_agent | main | 218 | Marked email as processed.
+2026-05-02 11:44:02,448 | INFO | appointment_agent | main | 225 | SMS notification sent.
+2026-05-02 11:44:02,449 | INFO | appointment_agent | main | 99 | Processing message ID: 19dc16d2b0b73c2b
+2026-05-02 11:44:02,526 | DEBUG | appointment_agent | main | 105 | === EMAIL OUTPUT ===
+2026-05-02 11:44:02,527 | DEBUG | appointment_agent | main | 106 | ID: 19dc16d2b0b73c2b
+2026-05-02 11:44:02,527 | DEBUG | appointment_agent | main | 107 | Thread: 19dc16d2b0b73c2b
+2026-05-02 11:44:02,528 | DEBUG | appointment_agent | main | 108 | From: Google <no-reply@accounts.google.com>
+2026-05-02 11:44:02,528 | DEBUG | appointment_agent | main | 109 | Subject: Google updated your settings
+2026-05-02 11:44:02,528 | DEBUG | appointment_agent | main | 110 | Body:
+[image: Google]
+Hi Steven, we updated your settings
+
+
+stevenkempliner@gmail.com
+Google couldn’t confirm you're an adult, so some account settings have
+changed
+Check it out
+<https://accounts.google.com/AccountChooser?Email=stevenkempliner@gmail.com&continue=https://myaccount.google.com/check-settings?cfc%3D1%26rfn%3D1777035128000>
+
+
+SafeSearch is on
+Google may hide explicit content, like pornography, from your search results
+
+Personalized ads are off
+Google won’t show you personalized ads
+
+Timeline is off
+Timeline won’t automatically save your visits and routes anymore
+
+Are you an adult?
+Verify your age
+<https://accounts.google.com/AccountChooser?Email=stevenkempliner@gmail.com&continue=https://myaccount.google.com/age-verification?avl%3D2%26p%3D7%26rfn%3D1777035128000>
+and choose the settings that are right for you
+You received this email to let you know about important changes to your
+Google Account and services.
+© 2026 Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
+2026-05-02 11:44:05,573 | INFO | appointment_agent | main | 127 | Email from no-reply@accounts.google.com is not a scheduling request. Skipping.
+2026-05-02 11:44:05,574 | INFO | appointment_agent | main | 232 | Appointment agent finished.
