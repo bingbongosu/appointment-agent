@@ -57,10 +57,10 @@ def main() -> None:
 
     load_dotenv()
 
-    log_mode = os.getenv("LOG_MODE", "console")
+    log_mode = os.getenv("LOG_MODE", "console").lower()
     valid_modes = {"console", "file", "both", "silent"}
 
-    if log_mode.lower() not in valid_modes:
+    if log_mode not in valid_modes:
         raise ValueError(f"Invalid LOG_MODE '{log_mode}'. Must be one of {valid_modes}")
 
     alert_phone_number = os.getenv("ALERT_PHONE_NUMBER")
@@ -81,12 +81,15 @@ def main() -> None:
 
     message_ids = get_unprocessed_message_ids(gmail_service)
 
+    #check if there are any unprocessed emails, if not log that and exit
     if not message_ids:
         logger.info("No unprocessed emails found.")
         return
 
+    # Log the number of unprocessed emails found at INFO level
     logger.info(f"Found {len(message_ids)} unprocessed email(s).")
 
+    # Ensure the "PROCESSED" label exists and get its ID for marking emails as processed later.
     processed_label_id = get_or_create_label(gmail_service, "PROCESSED")
 
     # Process each unhandled email
@@ -95,8 +98,10 @@ def main() -> None:
         # Log the message ID being processed at INFO level
         logger.info(f"Processing message ID: {msg_id}")
 
+        # Retrieve the full email message details using its ID. This includes sender, subject, body, and other metadata needed for processing.
         message = get_message_by_id(gmail_service, msg_id)
 
+        # Log the key details of the email at DEBUG level to help with troubleshooting and understanding the content being processed.
         logger.debug("=== EMAIL OUTPUT ===")
         logger.debug(f"ID: {message['id']}")
         logger.debug(f"Thread: {message['thread_id']}")
@@ -104,6 +109,7 @@ def main() -> None:
         logger.debug(f"Subject: {message['subject']}")
         logger.debug(f"Body:\n{message['body']}")
 
+        # Extract the sender's email address, email body, and subject from the retrieved message. The sender's email is parsed to ensure we have a clean email address for replying.
         sender_email = parseaddr(message["sender"])[1]
         email_text = message["body"] or ""
         subject_text = message["subject"] or ""
@@ -133,9 +139,10 @@ def main() -> None:
             max_slots=3,
         )
 
-        # If an exact requested time is available, create a calendar appointment immediately and include that information in the reply.
+        #set a flag to track whether an appointment was created for this request, which will be used to include that information in the reply and for logging purposes. 
         appointment_created = False
 
+        # If an exact requested time is available, create a calendar appointment immediately and include that information in the reply.
         if (
             slot_result.exact_requested_time_available
             and slot_result.exact_start
@@ -163,8 +170,10 @@ def main() -> None:
                 logger.error(f"Appointment creation failed: {e}")
                 continue
 
+        # Write a reply to the sender based on the parsed request, available slots, and whether an appointment was created. The reply will include proposed times if the exact requested time was not available.
         reply = write_reply(parsed, slot_result)
 
+        # Compile all the relevant information into an AgentOutput object for structured logging and to pass to the reply sending function. This includes the parsed request details, proposed slots, and the draft reply content.
         result = AgentOutput(
             parsed_request=parsed,
             proposed_slots=slot_result.slots,

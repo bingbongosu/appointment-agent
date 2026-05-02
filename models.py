@@ -2,7 +2,9 @@ from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
-
+# This file defines the data models used in the appointment scheduling agent, 
+# including the structure of the parsed appointment request, 
+# the proposed time slots, and the overall agent output that will be logged and used to generate replies.
 class AppointmentRequest(BaseModel):
     is_scheduling_request: bool = Field(
         description="True if the email is asking to schedule, book, move, or confirm a meeting."
@@ -68,6 +70,10 @@ class AppointmentRequest(BaseModel):
         description="Any extra useful interpretation."
     )
 
+
+# This model holds the results of the slot generation process, 
+# including the proposed time slots and whether the exact requested time was available. 
+# It also includes the exact start and end times if the requested time was available, which can be used to create a calendar appointment immediately.
 class SlotResult(BaseModel):
     """
     Holds scheduler output.
@@ -85,6 +91,11 @@ class SlotResult(BaseModel):
     exact_start: Optional[datetime] = None
     exact_end: Optional[datetime] = None
 
+
+# This model compiles all the relevant information about the appointment request and the agent's processing of it, 
+# including the parsed request details, the proposed time slots, and the draft reply content. 
+# It is used for structured logging and to pass comprehensive information to the reply sending function, 
+# which can use it to customize the reply based on what was proposed and whether an appointment was created.
 class AgentOutput(BaseModel):
     parsed_request: AppointmentRequest
     proposed_slots: List[str]
